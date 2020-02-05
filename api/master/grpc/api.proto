@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package crontab.master;
+
+option go_package = "grpc";
+
+message Job {
+    string name = 1;
+    string command = 2;
+    string cron_expr = 3;
+}
+message JobLog {
+    string job_name = 1;
+    string command = 2;
+    string err = 3;
+    string output = 4;
+    int64 plan_time = 5;
+    int64 schedule_time=6;
+    int64 start_time = 7;
+    int64 end_time = 8;
+}
+
+message SaveJobReq {
+    Job job = 1;
+}
+message SaveJobReply {
+}
+
+message DelJobReq {
+    string name = 1;
+}
+message DelJobReply {
+}
+
+message KillJobReq {
+    string name = 1;
+}
+message KillJobReply {
+}
+
+message ListJobReq {
+}
+message ListJobReply {
+    repeated Job jobs = 1;
+}
+
+message LogJobReq {
+    string name = 1;
+    int32 skip = 2;
+    int32 limit = 3;
+}
+message LogJobReply {
+    repeated Job jobs = 1;
+}
+
+message ListWorkerReq {
+}
+message ListWorkerReply {
+    repeated Job jobs = 1;
+}
+
+service Master {
+    rpc SaveJob (SaveJobReq) returns (SaveJobReply);
+    rpc DelJob (DelJobReq) returns (DelJobReply);
+    rpc ListJob (ListJobReq) returns (ListJobReply);
+    rpc KillJob (KillJobReq) returns (KillJobReply);
+    rpc LogJob (LogJobReq) returns (LogJobReply);
+
+    rpc ListWorker (ListWorkerReq) returns (ListWorkerReply);
+}
