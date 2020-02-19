@@ -4,6 +4,10 @@ package crontab.master;
 
 option go_package = "grpc";
 
+enum ErrNo {
+    Success = 0;
+}
+
 message Job {
     string name = 1;
     string command = 2;
@@ -15,7 +19,7 @@ message JobLog {
     string err = 3;
     string output = 4;
     int64 plan_time = 5;
-    int64 schedule_time=6;
+    int64 schedule_time = 6;
     int64 start_time = 7;
     int64 end_time = 8;
 }
@@ -24,24 +28,32 @@ message SaveJobReq {
     Job job = 1;
 }
 message SaveJobReply {
+    ErrNo errno = 1;
+    string errmsg = 2;
 }
 
 message DelJobReq {
     string name = 1;
 }
 message DelJobReply {
+    ErrNo errno = 1;
+    string errmsg = 2;
 }
 
 message KillJobReq {
     string name = 1;
 }
 message KillJobReply {
+    ErrNo errno = 1;
+    string errmsg = 2;
 }
 
 message ListJobReq {
 }
 message ListJobReply {
-    repeated Job jobs = 1;
+    ErrNo errno = 1;
+    string errmsg = 2;
+    repeated Job jobs = 3;
 }
 
 message LogJobReq {
@@ -50,13 +62,17 @@ message LogJobReq {
     int32 limit = 3;
 }
 message LogJobReply {
-    repeated Job jobs = 1;
+    ErrNo errno = 1;
+    string errmsg = 2;
+    repeated Job jobs = 3;
 }
 
 message ListWorkerReq {
 }
 message ListWorkerReply {
-    repeated Job jobs = 1;
+    ErrNo errno = 1;
+    string errmsg = 2;
+    repeated string workers = 3;
 }
 
 service Master {

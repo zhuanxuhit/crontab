@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	log "github.com/golang/glog"
-	"github.com/zhuanxuhit/crontab/internal/app/master"
+	"github.com/zhuanxuhit/crontab/internal/app/worker"
 	"github.com/zhuanxuhit/crontab/internal/app/worker/conf"
 	"math/rand"
 	"os"
@@ -23,23 +23,32 @@ func main() {
 		err error
 	)
 	flag.Parse()
+	// 加载配置
 	if err := conf.Init(); err != nil {
 		panic(err)
 	}
 	InitEnv()
 
-	// 初始化服务发现模块
-	if err = master.InitWorkerMgr(); err != nil {
+	// 服务注册
+	if err = worker.InitRegister(); err != nil {
+		panic(err)
+	}
+	// 启动日志协程
+	if err = worker.InitLogSink(); err != nil {
+		panic(err)
+	}
+	// 启动执行器
+	if err = worker.InitExecutor(); err != nil {
 		panic(err)
 	}
 
-	// 日志管理器
-	if err = master.InitLogMgr(); err != nil {
+	// 启动调度器
+	if err = worker.InitScheduler(); err != nil {
 		panic(err)
 	}
 
-	//  任务管理器
-	if err = master.InitJobMgr(); err != nil {
+	// 初始化任务管理器
+	if err = worker.InitJobMgr(); err != nil {
 		panic(err)
 	}
 
